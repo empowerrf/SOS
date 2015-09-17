@@ -414,7 +414,8 @@ main (int argc, char **argv)
 	printf("Testing device %s --Command = 0x%02x, Device address = %d , loop =%d\n", device, command, addr, loop);
 	fd = open_port(device);
 	
-	if (addrFlag) {
+	if (addrFlag) 
+	{
 		data[0] = 0;
 		data[1] = addr;  // address
 		data[2] = 3;     // len = 3

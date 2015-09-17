@@ -258,47 +258,48 @@ main (int argc, char **argv)
 	    goto usage;
     }
 
-	while ((c = getopt(argc, argv, "ECesi:c:a:d:u:N:T:" )) != EOF) {
-			switch (c)
-			{
-			case 'u':
-				device = optarg;
-				continue;
-			case 'e':
-				 echocmd = true;
-				 continue;
-			case 'E':
-			    dumpRxFlag = false;
-			     continue;
-			case 'c':
-				commandFlag = true;
-				command = strtol (optarg,&addr_tail,0);
-				continue;
-			case 'i':
-				iteration = strtol (optarg,&addr_tail,0);
-				continue;
-			case 'a':
-				addrFlag = 1;
-				addr = strtol (optarg,&addr_tail,0);
-				continue;
-			case 'd':
-				dataFlag = true;
-				pdata = optarg;
-				continue;
-			case 'N':
-				count = strtol (optarg,&addr_tail,0);
-				continue;
-			case 'T':
-				tailNb = strtol (optarg,&addr_tail,0);
-				continue;
-			case 'C':
-			    compareFlag = true;
-                continue;
-			case '?':
-			default:
-				goto usage;
-			}
+	while ((c = getopt(argc, argv, "ECesi:c:a:d:u:N:T:" )) != EOF) 
+	{
+		switch (c)
+		{
+		case 'u':
+			device = optarg;
+			continue;
+		case 'e':
+			 echocmd = true;
+			 continue;
+		case 'E':
+		    dumpRxFlag = false;
+		     continue;
+		case 'c':
+			commandFlag = true;
+			command = strtol (optarg,&addr_tail,0);
+			continue;
+		case 'i':
+			iteration = strtol (optarg,&addr_tail,0);
+			continue;
+		case 'a':
+			addrFlag = 1;
+			addr = strtol (optarg,&addr_tail,0);
+			continue;
+		case 'd':
+			dataFlag = true;
+			pdata = optarg;
+			continue;
+		case 'N':
+			count = strtol (optarg,&addr_tail,0);
+			continue;
+		case 'T':
+			tailNb = strtol (optarg,&addr_tail,0);
+			continue;
+		case 'C':
+		    compareFlag = true;
+            continue;
+		case '?':
+		default:
+			goto usage;
 		}
+	}
 
 	fd = open_port(device);
 
