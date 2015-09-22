@@ -18,7 +18,7 @@ readSerialBus:
 rs485Test:
 	${CC}   rs485Test.c  -o  $@ $<
 
-rs485Test:
+rs485:
 	${CC}   rs485.c  -o  $@ $<
 	
 clean:
