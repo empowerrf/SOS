@@ -15,7 +15,7 @@ do_install () {
    install -d ${D}${sbindir}
    install -m 0755 ${S}/readSerialBus ${D}${sbindir}
    install -m 0755 ${S}/rs485Test ${D}${sbindir}
-   install -m 0755 ${S}/rs485 ${D}${sbindir}
+   install -m 0755 ${S}/rs485    ${D}${sbindir}
 }
 
 #SRCREV = "e0465a1e310b1d94c0bb7464ddf7bedfe596c9e0"

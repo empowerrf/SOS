@@ -7,6 +7,8 @@
 #include <termios.h> // POSIX terminal control definitionss
 #include <time.h>   // time calls
 #include <unistd.h>
+#include <sys/ioctl.h>
+#include <linux/serial.h>
 
 
 
@@ -23,6 +25,7 @@
 #define dbgprintf(...)
 #endif
 
+static struct termios oldterminfo;
 
 
 // Transmit and receive buffers
@@ -33,16 +36,49 @@ unsigned char txBuffer[MAX_BUFFER];
 bool dumpRxFlag = true;
 
 
-
-void initPort(const char *port)
+int initPort(int fd)
 {
-    char buf[120];
-    memset (buf, 0, 120);
-    //sprintf(buf, "stty 115200 sane -echo -echok -icrnl -ixon -icanon -opost -onlcr time 3 min 0 <  %s", port );
-     sprintf(buf, "stty 115200 raw cread ignbrk -echo -echok -icrnl -ixon -icanon -opost -onlcr clocal time 3  min 0  <  %s", port );
-    dbgprintf("\n %s \n", buf );
-    system(buf);
+    struct termios attr;
+    struct serial_rs485 rs485conf;
+
+	memset(&attr, 0, sizeof(attr));
+    attr.c_iflag = 0;
+    attr.c_oflag = 0;
+    attr.c_cflag = CS8 | CREAD | CLOCAL;
+    attr.c_lflag = 0;
+    attr.c_cc[VMIN] = 1;
+    attr.c_cc[VTIME] = 5;
+    
+
+    //printf("getting old termios \n");
+    if (tcgetattr(fd, &oldterminfo) == -1) {
+        perror("openserial(): tcgetattr()");
+        return 0;
+    }
+    
+    //printf("flusing fd \n");
+    if (tcflush(fd, TCIOFLUSH) == -1) {
+        perror("openserial(): tcflush()");
+        return 0;
+    }
+    
+    /* Enable RS-485 mode: */
+	rs485conf.flags |= SER_RS485_ENABLED;
+
+	/* Write the current state of the RS-485 options with ioctl. */
+	//if (ioctl (fd, TIOCSRS485, &rs485conf) < 0) {
+	//	perror("Error: TIOCSRS485 ioctl not supported.\n");
+	//}
+	
+	//printf("setting speed \n");
+	cfsetospeed(&attr, B115200);
+	cfsetispeed(&attr, B115200);
+	//printf("setting new termios \n");
+	tcsetattr(fd, TCSANOW, &attr); 
+    
+    return 0;
 }
+
 
 int open_port(const char *port)
 {
@@ -56,7 +92,7 @@ int open_port(const char *port)
 		exit(1);
 	}
 	
-    initPort(port);
+    initPort(fd);
 
 	flags = fcntl(fd, F_GETFL);
 	flags |= O_NONBLOCK;
