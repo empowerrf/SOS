@@ -50,7 +50,7 @@ static int iteration = 0;
 static unsigned int  command = 0xA8;
 unsigned int addr = 0x5;
 
-#define RX_TIMEOUT 1000
+#define RX_TIMEOUT 100
 
 #ifdef USE_STTY
 int open_port(const char *port)
@@ -411,7 +411,7 @@ main (int argc, char **argv)
 			}
 		}
 
-	printf("Testing device %s --Command = 0x%02x, Device address = %d , loop =%d\n", device, command, addr, loop);
+	printf("Testing device %s Command = 0x%02x, Device Address = %d , loop =%d\n", device, command, addr, loop);
 	fd = open_port(device);
 	
 	if (addrFlag) 
@@ -459,7 +459,7 @@ main (int argc, char **argv)
 
 	  
 	  do {
-		  system("cat /proc/tty/driver/atmel_serial | grep -e ""1:"" ");
+		  printtty();
 		  n = transmit(fd, data, len+ 6 );
 		  if (n == (len+ 6 ) )
 		  {
