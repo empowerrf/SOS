@@ -74,9 +74,60 @@ int openserial(char *devicename)
     return fd;
 }
 
-int writeAddress( int fd, char *data, int datalen)
+int writeParityMark( int fd, char *data, int datalen)
 {
+    struct termios tty;
+    memset (&tty, 0, sizeof tty); // initialize all in struct tty with 0
+    if (tcgetattr (fd, &tty) != 0)// gets parameters from fd and stores them in tty struct
+    {
+        perror("error from tcgetattr");
+        return -1;
+    }
+
+   tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
+   tty.c_cflag |=  PARENB|PARODD|CMSPAR;
+
+   if (tcsetattr (fd, TCSANOW, &tty) != 0)
+   {
+       perror("error from tcsetattr");
+       return -1;
+   }
+
+   if(write(fd, data, datalen) < 0)
+   {
+       printf("write failed \n");
+   }
+  tcdrain(fd);
+
 }
+
+int writeParityCear( int fd, char *data, int datalen)
+{
+    struct termios tty;
+    memset (&tty, 0, sizeof tty); // initialize all in struct tty with 0
+    if (tcgetattr (fd, &tty) != 0)// gets parameters from fd and stores them in tty struct
+    {
+        perror("error from tcgetattr");
+        return -1;
+    }
+
+    tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
+    tty.c_cflag |=  PARENB|CMSPAR;
+
+    if (tcsetattr (fd, TCSANOW, &tty) != 0)
+    {
+        perror("error from tcsetattr");
+        return -1;
+    }
+
+    if(write(fd, data, datalen) < 0)
+    {
+        printf("write failed \n");
+    }
+    tcdrain(fd);
+
+}
+
 int main()
 {
     int fd, i;

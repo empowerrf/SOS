@@ -5,7 +5,7 @@ C_FILES := $(wildcard ./*.c)
 OBJC_FILES   := $(addprefix obj/,$(notdir $(C_FILES:.c=.o)))
 
 		
-TARGET =  readSerialBus rs485Test rs485
+TARGET =  readSerialBus rs485Test rs485 rs485Parity
 
 all:  $(TARGET)
 
@@ -20,7 +20,9 @@ rs485Test:
 
 rs485:
 	${CC}   rs485.c  -o  $@ $<
-	
+
+rs485Parity:
+	${CC}  rs485Parity.c  -o  $@ $<	
 clean:
 	rm -f  $(CXX_OBJS) $(TARGET)
 
